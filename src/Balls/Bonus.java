@@ -1,7 +1,8 @@
 package Balls;
 
-import javax.swing.*;
 import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class Bonus implements Runnable {
@@ -16,7 +17,7 @@ public class Bonus implements Runnable {
     public int i;
     double angle = Math.toRadians(Math.random()*360);
 
-    public Bonus() throws InterruptedException {
+    public Bonus(){
         color = Color.BLUE;
         x = Math.random() * GamePanel.WIDTH;
         y = 0;

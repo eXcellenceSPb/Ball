@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Agents implements Runnable, ActionListener {
+public class Agents implements Runnable{
     private static double x;
     private static double y;
     private static int r;
@@ -13,9 +13,7 @@ public class Agents implements Runnable, ActionListener {
     private static double speed;
     private static double dx;
     private static double dy;
-    private static Timer timer;
     private static int health;
-    private static int time;
     double angle = Math.toRadians(Math.random()*360);
 
     public Agents(){
@@ -24,7 +22,6 @@ public class Agents implements Runnable, ActionListener {
         y = 0;
         r = 30;
         health = 1;
-        timer = new Timer((int)Math.random()*2,this::actionPerformed);
         speed = Math.random() * 3;
         dx = Math.sin(angle) * speed;
         dy = Math.cos(angle) * speed;
@@ -37,19 +34,8 @@ public class Agents implements Runnable, ActionListener {
         return y;
     }
 
-    public int getTime(){
-        return time;
-    }
-
     public void setHealth(){
          health = 1;
-    }
-
-    public void setTime(int i) throws InterruptedException {
-        Time time = new Time(10);
-    }
-    public void start(){
-        timer.start();
     }
 
     public int getR() {
@@ -57,13 +43,13 @@ public class Agents implements Runnable, ActionListener {
     }
 
     public boolean remove() {
-        if (health <= 0 || time == 0){
+        if (health <= 0){
             return true;
         }
         return false;
     }
     public void hit(int t){
-        timer.setDelay(t);
+
     }
 
     public void update(){
@@ -90,10 +76,5 @@ public class Agents implements Runnable, ActionListener {
 
     @Override
     public void run() {
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        remove();
     }
 }

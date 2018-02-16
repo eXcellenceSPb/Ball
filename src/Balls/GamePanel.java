@@ -2,8 +2,10 @@ package Balls;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -51,15 +53,10 @@ public class GamePanel extends JPanel implements Runnable {
         background = new GameBack();
         bonus = new ArrayList<Bonus>();
         agents = new ArrayList<Agents>();
-
-        try {
-            bonus.add(new Bonus());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Time time = new Time();
+        time.schedule(new Bonus(),100);
         agents.add(new Agents());
-
-
+        bonus.add(new Bonus());
 
         Toolkit kit = Toolkit.getDefaultToolkit();
         BufferedImage buffered = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
@@ -110,6 +107,7 @@ public class GamePanel extends JPanel implements Runnable {
 //                }
 //            }
 //        }
+
         for (int i = 0; i < bonus.size(); i++) {
             bonus.get(i).update();
         }
