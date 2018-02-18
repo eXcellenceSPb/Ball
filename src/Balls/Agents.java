@@ -1,9 +1,10 @@
 package Balls;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static Balls.GamePanel.agents;
 
 public class Agents implements Runnable{
     private static double x;
@@ -15,6 +16,7 @@ public class Agents implements Runnable{
     private static double dy;
     private static int health;
     double angle = Math.toRadians(Math.random()*360);
+    public int time;
 
     public Agents(){
         color = Color.RED;
@@ -22,6 +24,7 @@ public class Agents implements Runnable{
         y = 0;
         r = 30;
         health = 1;
+        time = (int)Math.random()*990000;
         speed = Math.random() * 3;
         dx = Math.sin(angle) * speed;
         dy = Math.cos(angle) * speed;
@@ -48,8 +51,13 @@ public class Agents implements Runnable{
         }
         return false;
     }
-    public void hit(int t){
 
+    public void setTime(int t){
+        time = t;
+    }
+
+    public int getTime(){
+        return time;
     }
 
     public void update(){
@@ -76,5 +84,16 @@ public class Agents implements Runnable{
 
     @Override
     public void run() {
+        java.util.Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (agents.isEmpty() != true)
+                    for (int i = 0; i < agents.size(); i++) {
+                        agents.clear();
+//                        agents.get(i).update();
+                    }
+            }
+        },3000+time, 5000);
     }
 }

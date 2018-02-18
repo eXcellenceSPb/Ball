@@ -1,8 +1,6 @@
 package Balls;
 
 import java.awt.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class Bonus implements Runnable {
@@ -16,6 +14,7 @@ public class Bonus implements Runnable {
     private Color color;
     public int i;
     double angle = Math.toRadians(Math.random()*360);
+    public int time;
 
     public Bonus(){
         color = Color.BLUE;
@@ -23,6 +22,7 @@ public class Bonus implements Runnable {
         y = 0;
         r = 30;
         health = 1;
+        time = 1000+(int)(Math.random()*10000);
         speed = Math.random() * 3;
         dx = Math.sin(angle) * speed;
         dy = Math.cos(angle) * speed;
@@ -39,7 +39,7 @@ public class Bonus implements Runnable {
         return r;
     }
 
-    protected boolean remove() {
+    public boolean remove() {
         if (health <= 0){
             return true;
         }
@@ -47,6 +47,13 @@ public class Bonus implements Runnable {
     }
     public void hit(){
         health--;
+    }
+
+    public int getTime(){
+        return time;
+    }
+    public void setTime(int t){
+        time = t;
     }
 
     public void update(){
@@ -70,8 +77,19 @@ public class Bonus implements Runnable {
         g.drawOval((int)(x - r),(int) (y - r), 2 * r, 2 * r);
     }
 
-    @Override
-    public void run() {
+   @Override
+   public void run() {
+//        Timer t = new Timer();
+//        t.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (bonus.isEmpty() != true)
+//                for (int i = 0; i < GamePanel.bonus.size(); i++) {
+//                        GamePanel.bonus.clear();
+//                    GamePanel.bonus.get(i).update();
+//                }
+//            }
+//        }, time, 5000);
     }
 
 }

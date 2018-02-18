@@ -15,21 +15,21 @@ public class GameStart {
 
     public static void main(String[] args) throws SQLException {
 
-//        String query = "SELECT * FROM `balls`";
-//        try{
-//            connection = DriverManager.getConnection(url,login,Pass);
-//            statement = connection.createStatement();
-//            resultSet = statement.executeQuery(query);
-//
-//            if (resultSet.next()){
-//                int count = 0;
-//                count = resultSet.getInt(1);
-//                String count1 = resultSet.getString(2);
-//                System.out.println("Id: "+count + "; Результат: "+count1+";");
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        String query = "SELECT * FROM `balls`";
+        try{
+            connection = DriverManager.getConnection(url,login,Pass);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+
+            if (resultSet.next()){
+                int count = 0;
+                count = resultSet.getInt(1);
+                String count1 = resultSet.getString(2);
+                System.out.println("Id: "+count + "; Результат: "+count1+";");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         GamePanel panel = new GamePanel();
         JFrame startFrame = new JFrame("Bubble");
