@@ -13,14 +13,13 @@ public class GameStart {
     public static ResultSet resultSet;
 
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, InterruptedException {
 
         String query = "SELECT * FROM `balls`";
         try{
             connection = DriverManager.getConnection(url,login,Pass);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
-
             if (resultSet.next()){
                 int count = 0;
                 count = resultSet.getInt(1);

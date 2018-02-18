@@ -22,12 +22,12 @@ public class Agents implements Runnable{
         color = Color.RED;
         x = Math.random() * GamePanel.WIDTH;
         y = 0;
-        r = 30;
+        r = 7;
         health = 1;
         time = (int)Math.random()*990000;
         speed = Math.random() * 3;
-        dx = Math.sin(angle) * speed;
-        dy = Math.cos(angle) * speed;
+        dx = Math.sin(angle) * speed/2;
+        dy = Math.cos(angle) * speed/2;
     }
     public double getX() {
         return x;
@@ -90,10 +90,11 @@ public class Agents implements Runnable{
             public void run() {
                 if (agents.isEmpty() != true)
                     for (int i = 0; i < agents.size(); i++) {
-                        agents.clear();
+                    agents.get(i).remove();
+                        agents.remove(i);
 //                        agents.get(i).update();
                     }
             }
-        },3000+time, 5000);
+        },30000, 5000);
     }
 }

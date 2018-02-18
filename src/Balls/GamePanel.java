@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GamePanel extends JPanel implements Runnable {
     public static final int WIDTH = 600;
@@ -19,11 +21,11 @@ public class GamePanel extends JPanel implements Runnable {
     public static boolean leftMouse;
     public static int mouseX;
     public static int mouseY;
+    private int rand;
 
     public enum STATES {
         MENU,
         PLAY,
-        LOOSE,
         WIN
     }
 
@@ -40,7 +42,11 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void start() {
         thread = new Thread(this);
+        Thread thread2 = new Thread(new Agents(), "Kek");
+        Thread thread3 = new Thread(new Bonus(), "Lol");
         thread.start();
+        thread2.start();
+        thread3.start();
     }
 
     @Override
@@ -51,15 +57,25 @@ public class GamePanel extends JPanel implements Runnable {
         leftMouse = false;
         menu = new Menu();
         background = new GameBack();
-        bonus = new ArrayList<Bonus>();
-        agents = new ArrayList<Agents>();
-
-        synchronized (agents) {
-            new Agents().run();
-            new Bonus().run();
+        bonus = new ArrayList<>();
+        agents = new ArrayList<>();
+        for (int i = 0; i < 1; i++) {
+            //bonus.add(new Bonus());
+            agents.add(new Agents());
         }
-        agents.add(new Agents());
-        bonus.add(new Bonus());
+
+        Timer del = new Timer();
+        del.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (!bonus.isEmpty())
+                    for (int i = 0; i < bonus.size(); i++) {
+                        bonus.get(i).remove();
+                        bonus.remove(i);
+                    }
+            }
+        }, 10000, 3000);
+
 
         while (true) {
             if (states.equals(STATES.MENU)) {
@@ -75,17 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
                 gameRender();
                 gameDraw();
             }
-            if (states.equals(STATES.LOOSE)) {
-                background.update();
-                long len = (int) g.getFontMetrics().getStringBounds("Agents die", g).getWidth();
-                background.draw(g);
-                g.setColor(new Color(255, 50, 250, 150));
-                g.drawString("Agents die", (int) (GamePanel.WIDTH / 2 - len / 2),
-                        (int) (GamePanel.HEIGHT / 4 - len / 6));
-                menu.update();
-                menu.draw(g);
-                gameDraw();
-            }
+
             if (states.equals(STATES.WIN)) {
                 background.update();
                 long len = (int) g.getFontMetrics().getStringBounds("Agents win", g).getWidth();
@@ -103,67 +109,58 @@ public class GamePanel extends JPanel implements Runnable {
     public void restart() {
         agents.clear();
         bonus.clear();
-        agents.add(new Agents());
-        bonus.add(new Bonus());
+        run();
     }
 
     public void gameUpdate() {
         background.update();
-        if (agents.isEmpty()) {
-            GamePanel.states = STATES.LOOSE;
-            restart();
-        }
-        if (!agents.isEmpty() || bonus.isEmpty()) {
+
             for (int i = 0; i < agents.size(); i++) {
-                if (bonus.isEmpty()) {
+                if (agents.size() == 1 ) {
                     double a = agents.get(i).getX();
                     double b = agents.get(i).getY();
+                    String d = String.valueOf(agents.get(i).getTime());
                     String c = (int) a + "," + (int) b;
+
                     String query = "INSERT INTO balls (pos) \n" +
                             " VALUES ('" + c + "');";
+                    String query2 = "INSERT INTO balls (time) \n" +
+                            " VALUES ('" + d + "');";
                     try {
                         GameStart.statement.executeUpdate(query);
+                        GameStart.statement.executeUpdate(query2);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                    //agents.get(i).remove();
-
                     GamePanel.states = GamePanel.STATES.WIN;
                     restart();
                 }
             }
-        }
-        if (!bonus.isEmpty()) {
-            for (int i = 0; i < bonus.size(); i++) {
-                bonus.get(i).update();
-            }
-        }
-        if (!agents.isEmpty()) {
+
             for (int i = 0; i < agents.size(); i++) {
                 agents.get(i).update();
             }
-        }
-        if (!agents.isEmpty()) {
-            for (int i = 0; i < bonus.size(); i++) {
-                Bonus b = bonus.get(i);
-                double ex = b.getX();
-                double ey = b.getY();
-                double px = agents.get(i).getX();
-                double py = agents.get(i).getY();
-                double dx = ex - px;
-                double dy = ey - py;
-                double dist = Math.sqrt(dx * dx + dy * dy);
-                if ((int) dist <= b.getR() + agents.get(i).getR()) {
-                    agents.get(i).setTime(agents.get(i).getTime() + bonus.get(i).getTime());
-                    b.hit();
-                    boolean remove = b.remove();
-                    if (remove) {
-                        bonus.remove(i);
+
+            for (int i = 0; i < agents.size(); i++) {
+                for (int h = 0; h < bonus.size(); h++) {
+                    double ex = bonus.get(h).getX();
+                    double ey = bonus.get(h).getY();
+                    double px = agents.get(i).getX();
+                    double py = agents.get(i).getY();
+                    double dx = ex - px;
+                    double dy = ey - py;
+                    double dist = Math.sqrt(dx * dx + dy * dy);
+                    if ((int) dist <= bonus.get(h).getR() + agents.get(i).getR()) {
+                        agents.get(i).setTime(agents.get(i).getTime() + bonus.get(h).getTime());
+                        bonus.get(h).hit();
+                        boolean remove = bonus.get(h).remove();
+                        if (remove) {
+                            bonus.remove(h);
+                        }
                     }
                 }
             }
         }
-    }
 
     private void gameRender() {
         background.draw(g);
