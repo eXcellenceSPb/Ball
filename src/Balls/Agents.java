@@ -1,12 +1,8 @@
 package Balls;
 
 import java.awt.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import static Balls.GamePanel.agents;
-
-public class Agents implements Runnable{
+public class Agents extends Thread{
     private static double x;
     private static double y;
     private static int r;
@@ -15,20 +11,23 @@ public class Agents implements Runnable{
     private static double dx;
     private static double dy;
     private static int health;
+    public int i;
     double angle = Math.toRadians(Math.random()*360);
     public int time;
 
     public Agents(){
         color = Color.RED;
-        x = Math.random() * GamePanel.WIDTH;
-        y = 0;
+        x =(int) (Math.random() * GamePanel.WIDTH);
+        y =(int) (Math.random() * GamePanel.HEIGHT);
         r = 7;
         health = 1;
-        time = (int)Math.random()*990000;
-        speed = Math.random() * 3;
+        time = (int)(Math.random()*9900);
+        speed = 1+(int)(Math.random() * 3);
         dx = Math.sin(angle) * speed/2;
         dy = Math.cos(angle) * speed/2;
+        start();
     }
+
     public double getX() {
         return x;
     }
@@ -77,24 +76,24 @@ public class Agents implements Runnable{
     public void draw(Graphics2D g) {
         g.setColor(color);
         g.fillOval((int)(x - r),(int) (y - r), 2 * r, 2 * r);
-        g.setStroke(new BasicStroke(4));
+        g.setStroke(new BasicStroke(3));
         g.setColor(color.darker());
         g.drawOval((int)(x - r),(int) (y - r), 2 * r, 2 * r);
     }
 
-    @Override
-    public void run() {
-        java.util.Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (agents.isEmpty() != true)
-                    for (int i = 0; i < agents.size(); i++) {
-                    agents.get(i).remove();
-                        agents.remove(i);
-//                        agents.get(i).update();
-                    }
-            }
-        },30000, 5000);
-    }
+//    @Override
+//    public void run() {
+//        Timer t = new Timer();
+//        t.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (!agents.isEmpty())
+//                    for (int i = 0; i < agents.size(); i++) {
+//                    agents.get(i).remove();
+//                        agents.remove(i);
+////                        agents.get(i).update();
+//                    }
+//            }
+//        },1000, 5000);
+//    }
 }

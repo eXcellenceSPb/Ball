@@ -12,8 +12,9 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int WIDTH = 600;
     public static final int HEIGHT = 600;
     private static GameBack background;
-    public static ArrayList<Agents> agents;
     public static ArrayList<Bonus> bonus;
+    public static ArrayList<Enemy> enemies;
+    public static ArrayList<String> pos;
     public static Menu menu;
     private Thread thread;
     private BufferedImage image;
@@ -21,7 +22,6 @@ public class GamePanel extends JPanel implements Runnable {
     public static boolean leftMouse;
     public static int mouseX;
     public static int mouseY;
-    private int rand;
 
     public enum STATES {
         MENU,
@@ -42,29 +42,28 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void start() {
         thread = new Thread(this);
-        Thread thread2 = new Thread(new Agents(), "Kek");
-        Thread thread4 = new Thread(new Agents(), "Kek2");
-        Thread thread3 = new Thread(new Bonus(), "Lol");
         thread.start();
-        thread2.start();
-        thread3.start();
-        thread4.start();
     }
 
     @Override
     public void run() {
+        Thread Bonus = new Thread(new Bonus());
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        addKeyListener(new Listeners());
         leftMouse = false;
         menu = new Menu();
         background = new GameBack();
-        bonus = new ArrayList<>();
-        agents = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
-            //bonus.add(new Bonus());
-            agents.add(new Agents());
+        bonus = new ArrayList<Bonus>();
+        pos = new ArrayList<>();
+
+        enemies = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            enemies.add(new Enemy());
         }
+
+        Bonus.start();
 
         Timer del = new Timer();
         del.schedule(new TimerTask() {
@@ -76,12 +75,11 @@ public class GamePanel extends JPanel implements Runnable {
                         bonus.remove(i);
                     }
             }
-        }, 10000, 3000);
+        }, 2000, 3000);
 
 
         while (true) {
             if (states.equals(STATES.MENU)) {
-
                 background.update();
                 background.draw(g);
                 menu.update();
@@ -93,7 +91,6 @@ public class GamePanel extends JPanel implements Runnable {
                 gameRender();
                 gameDraw();
             }
-
             if (states.equals(STATES.WIN)) {
                 background.update();
                 long len = (int) g.getFontMetrics().getStringBounds("Agents win", g).getWidth();
@@ -109,7 +106,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void restart() {
-        agents.clear();
+        enemies.clear();
         bonus.clear();
         run();
     }
@@ -117,60 +114,63 @@ public class GamePanel extends JPanel implements Runnable {
     public void gameUpdate() {
         background.update();
 
-//            for (int i = 0; i < agents.size(); i++) {
-//                if (agents.size() == 1 ) {
-//                    double a = agents.get(i).getX();
-//                    double b = agents.get(i).getY();
-//                    String d = String.valueOf(agents.get(i).getTime());
-//                    String c = (int) a + "," + (int) b;
-//
-//                    String query = "INSERT INTO balls (pos) \n" +
-//                            " VALUES ('" + c + "');";
-//                    String query2 = "INSERT INTO balls (time) \n" +
-//                            " VALUES ('" + d + "');";
-//                    try {
-//                       GameStart.statement.executeUpdate(query);
-//                        GameStart.statement.executeUpdate(query2);
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
-//                    GamePanel.states = GamePanel.STATES.WIN;
-//                    restart();
-//                }
-//            }
-
-            for (int i = 0; i < agents.size(); i++) {
-                agents.get(i).update();
+        for (int i = 0; i < enemies.size(); i++) {
+            if (enemies.get(i).getTime() <= 0) {
+                pos.add("x " + enemies.get(i).getX() + ", " +
+                        "y " + enemies.get(i).getY() + " , time " + enemies.get(i).getTime());
+                enemies.get(i).remove();
+                enemies.remove(i);
             }
+        }
 
-            for (int i = 0; i < agents.size(); i++) {
-                for (int h = 0; h < bonus.size(); h++) {
-                    double ex = bonus.get(h).getX();
-                    double ey = bonus.get(h).getY();
-                    double px = agents.get(i).getX();
-                    double py = agents.get(i).getY();
-                    double dx = ex - px;
-                    double dy = ey - py;
-                    double dist = Math.sqrt(dx * dx + dy * dy);
-                    if ((int) dist <= bonus.get(h).getR() + agents.get(i).getR()) {
-                        agents.get(i).setTime(agents.get(i).getTime() + bonus.get(h).getTime());
-                        bonus.get(h).hit();
-                        boolean remove = bonus.get(h).remove();
-                        if (remove) {
-                            bonus.remove(h);
-                        }
+        if (enemies.size() <= 0) {
+            for (int i = 0; i < pos.size(); i++) {
+                String c = pos.get(i);
+                String query = "INSERT INTO balls (pos) \n" +
+                        " VALUES ('" + c + "');";
+                try {
+                    GameStart.statement.executeUpdate(query);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            GamePanel.states = STATES.WIN;
+            restart();
+        }
+
+        for (int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).update();
+        }
+
+        for (int i = 0; i < enemies.size(); i++) {
+            for (int h = 0; h < bonus.size(); h++) {
+                double ex = bonus.get(h).getX();
+                double ey = bonus.get(h).getY();
+                double px = enemies.get(i).getX();
+                double py = enemies.get(i).getY();
+                double dx = ex - px;
+                double dy = ey - py;
+                double dist = Math.sqrt(dx * dx + dy * dy);
+                if ((int) dist <= bonus.get(h).getR() + enemies.get(i).getR()) {
+                    enemies.get(i).setTime(enemies.get(i).getTime() + bonus.get(h).getTime());
+                    bonus.get(h).hit();
+                    boolean remove = bonus.get(h).remove();
+                    if (remove) {
+                        bonus.remove(h);
                     }
                 }
             }
         }
+    }
+
 
     private void gameRender() {
         background.draw(g);
         for (int i = 0; i < bonus.size(); i++) {
             bonus.get(i).draw(g);
         }
-        for (int i = 0; i < agents.size(); i++) {
-            agents.get(i).draw(g);
+        for (int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).draw(g);
         }
     }
 

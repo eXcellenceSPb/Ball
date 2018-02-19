@@ -1,12 +1,12 @@
 package Balls;
-import java.awt.*;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-public class Listeners implements MouseListener,MouseMotionListener {
+public class Listeners implements MouseListener,MouseMotionListener,KeyListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -46,5 +46,23 @@ public class Listeners implements MouseListener,MouseMotionListener {
             GamePanel.leftMouse = false;
 
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int key = e.getKeyCode();
+        if(key == KeyEvent.VK_ESCAPE) {
+            GamePanel.states = GamePanel.STATES.MENU;
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

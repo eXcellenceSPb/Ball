@@ -20,12 +20,12 @@ public class GameStart {
             connection = DriverManager.getConnection(url,login,Pass);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
-            if (resultSet.next()){
-                int count = 0;
-                count = resultSet.getInt(1);
-                String count1 = resultSet.getString(2);
-                System.out.println("Id: "+count + "; Результат: "+count1+";");
-            }
+//            if (resultSet.next()){
+//                int count = 0;
+//                count = resultSet.getInt(1);
+//                String count1 = resultSet.getString(2);
+//                System.out.println("Id: "+count + "; Результат: "+count1+";");
+//            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

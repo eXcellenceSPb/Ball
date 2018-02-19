@@ -14,7 +14,6 @@ public class Bonus implements Runnable {
 
     private int health;
     private Color color;
-    public int i;
     public int time;
 
     public Bonus() {
@@ -23,7 +22,8 @@ public class Bonus implements Runnable {
         y = Math.random() * GamePanel.HEIGHT;
         r = 5;
         health = 1;
-        time = 1000 + (int) (Math.random() * 10000);
+        time = 3;//(int) (Math.random() * 10);
+       // run();
     }
 
     public double getX() {
@@ -53,12 +53,12 @@ public class Bonus implements Runnable {
         return time;
     }
 
-    public void setTime(int t) {
-        time = t;
-    }
+//    public void setTime(int t) {
+//        time = t;
+//    }
 
-    public void update() {
-    }
+//    public void update() {
+//    }
 
     public void draw(Graphics2D g) {
         g.setColor(color);
@@ -74,13 +74,13 @@ public class Bonus implements Runnable {
         add.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (bonus.size()<= 5)
                 for (int k = 0; k < 1; k++) {
                     bonus.add(new Bonus());
                 }
-                i++;
             }
 
-        }, 1000, 3000);
+        }, 1000, 2000);
 
     }
 }
