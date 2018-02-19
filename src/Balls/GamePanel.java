@@ -43,10 +43,12 @@ public class GamePanel extends JPanel implements Runnable {
     public void start() {
         thread = new Thread(this);
         Thread thread2 = new Thread(new Agents(), "Kek");
+        Thread thread4 = new Thread(new Agents(), "Kek2");
         Thread thread3 = new Thread(new Bonus(), "Lol");
         thread.start();
         thread2.start();
         thread3.start();
+        thread4.start();
     }
 
     @Override
@@ -115,27 +117,27 @@ public class GamePanel extends JPanel implements Runnable {
     public void gameUpdate() {
         background.update();
 
-            for (int i = 0; i < agents.size(); i++) {
-                if (agents.size() == 1 ) {
-                    double a = agents.get(i).getX();
-                    double b = agents.get(i).getY();
-                    String d = String.valueOf(agents.get(i).getTime());
-                    String c = (int) a + "," + (int) b;
-
-                    String query = "INSERT INTO balls (pos) \n" +
-                            " VALUES ('" + c + "');";
-                    String query2 = "INSERT INTO balls (time) \n" +
-                            " VALUES ('" + d + "');";
-                    try {
-                        GameStart.statement.executeUpdate(query);
-                        GameStart.statement.executeUpdate(query2);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    GamePanel.states = GamePanel.STATES.WIN;
-                    restart();
-                }
-            }
+//            for (int i = 0; i < agents.size(); i++) {
+//                if (agents.size() == 1 ) {
+//                    double a = agents.get(i).getX();
+//                    double b = agents.get(i).getY();
+//                    String d = String.valueOf(agents.get(i).getTime());
+//                    String c = (int) a + "," + (int) b;
+//
+//                    String query = "INSERT INTO balls (pos) \n" +
+//                            " VALUES ('" + c + "');";
+//                    String query2 = "INSERT INTO balls (time) \n" +
+//                            " VALUES ('" + d + "');";
+//                    try {
+//                       GameStart.statement.executeUpdate(query);
+//                        GameStart.statement.executeUpdate(query2);
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                    GamePanel.states = GamePanel.STATES.WIN;
+//                    restart();
+//                }
+//            }
 
             for (int i = 0; i < agents.size(); i++) {
                 agents.get(i).update();
