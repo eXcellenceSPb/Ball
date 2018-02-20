@@ -1,25 +1,36 @@
 package Balls;
 
+import Balls.Game.GamePanel;
+
 import javax.swing.JFrame;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Properties;
 
 public class GameStart {
-    private static final String url = "jdbc:mysql://localhost:3306/balls";
-    private static final String login = "root";
-    private static final String Pass = "";
+
+    private static String URL;// = "jdbc:mysql://localhost:3306/balls";
+    private static String Login;// = "root";
+    private static String Pass;// = "";
 
     public static Connection connection;
     public static Statement statement;
-    public static ResultSet resultSet;
+//    public static ResultSet resultSet;
 
 
-    public static void main(String[] args) throws SQLException, InterruptedException {
-
-        String query = "SELECT * FROM `balls`";
+    public static void main(String[] args) throws IOException {
+        Properties props = new Properties();
+        props.load(new FileInputStream(new File("src/config.ini")));
+        URL = props.getProperty("URL");
+        Login = props.getProperty("Login");
+        Pass = props.getProperty("Pass");
+//        String query = "SELECT * FROM `balls`";
         try{
-            connection = DriverManager.getConnection(url,login,Pass);
+            connection = DriverManager.getConnection(URL,Login,Pass);
             statement = connection.createStatement();
-            resultSet = statement.executeQuery(query);
+//            resultSet = statement.executeQuery(query);
 //            if (resultSet.next()){
 //                int count = 0;
 //                count = resultSet.getInt(1);

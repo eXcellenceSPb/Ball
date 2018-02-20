@@ -1,10 +1,12 @@
-package Balls;
+package Balls.Agents;
+
+import Balls.Game.GamePanel;
 
 import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static Balls.GamePanel.bonus;
+import static Balls.Game.GamePanel.bonus;
 
 
 public class Bonus implements Runnable {

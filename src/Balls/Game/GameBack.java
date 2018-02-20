@@ -1,4 +1,4 @@
-package Balls;
+package Balls.Game;
 
 import java.awt.*;
 

@@ -1,12 +1,14 @@
-package Balls;
+package Balls.Agents;
+
+import Balls.Game.GamePanel;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static Balls.GamePanel.enemies;
-import static Balls.GamePanel.pos;
 
 public class Enemy extends Thread {
     private double x;
@@ -18,12 +20,15 @@ public class Enemy extends Thread {
     private double speed;
     private int time;
 
-    public Enemy() {
+    public Enemy() throws IOException{
         this.color = Color.GREEN;
         this.x = Math.random() * GamePanel.WIDTH;
         this.y = 0;
         this.r = 10;
-        time = 5;
+        //time = 5;
+        Properties props = new Properties();
+        props.load(new FileInputStream(new File("src/config.ini")));
+        time = Integer.valueOf(props.getProperty("time","1"))*(int)(Math.random()*2);
         this.speed = 2;
         double angle = Math.toRadians(Math.random() * 360);
         dx = Math.sin(angle) * speed;

@@ -1,8 +1,13 @@
-package Balls;
+package Balls.Game;
+
+import Balls.Agents.Bonus;
+import Balls.Agents.Enemy;
+import Balls.GameStart;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -60,7 +65,11 @@ public class GamePanel extends JPanel implements Runnable {
 
         enemies = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            enemies.add(new Enemy());
+            try {
+                enemies.add(new Enemy());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         Bonus.start();

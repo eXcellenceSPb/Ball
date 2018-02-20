@@ -1,4 +1,6 @@
-package Balls;
+package Balls.Agents;
+
+import Balls.Game.GamePanel;
 
 import java.awt.*;
 
